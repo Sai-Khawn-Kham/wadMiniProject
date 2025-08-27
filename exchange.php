@@ -1,12 +1,3 @@
-<?php
-
-if (empty($_POST['width']) || empty($_POST['breadth'])) {
-  header("Location: /area.php");
-  die("-- need all input --");
-}
-
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -67,7 +58,7 @@ if (empty($_POST['width']) || empty($_POST['breadth'])) {
               </li>
 
               <li>
-                <a href="exchange.php" class=" w-full flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-gray-800 rounded-lg hover:bg-gray-100 focus:outline-hidden focus:bg-gray-100 dark:bg-neutral-800 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700 dark:text-neutral-200">
+                <a class=" w-full flex items-center gap-x-3.5 py-2 px-2.5 text-sm text-gray-800 rounded-lg hover:bg-gray-100 focus:outline-hidden focus:bg-gray-100 dark:bg-neutral-800 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700 dark:text-neutral-200" href="#">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                   </svg>
@@ -93,48 +84,43 @@ if (empty($_POST['width']) || empty($_POST['breadth'])) {
             <path d="m9 18 6-6-6-6"></path>
           </svg>
         </li>
-        <li class="inline-flex items-center">
-          <a href="./area.php" class="flex items-center text-sm text-gray-500 hover:text-blue-600 focus:outline-hidden focus:text-blue-600 dark:text-neutral-500 dark:hover:text-blue-500 dark:focus:text-blue-500">
-            Area Calculator
-            <svg class="shrink-0 mx-2 size-4 text-gray-400 dark:text-neutral-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="m9 18 6-6-6-6"></path>
-            </svg>
-          </a>
-        </li>
         <li class="inline-flex items-center text-sm font-semibold text-gray-800 truncate dark:text-neutral-200" aria-current="page">
-          Calculate Result
+          Exchange Calculator
         </li>
       </ol>
 
       <hr class="border-gray-300 my-4">
 
-      <?php
-      $width = $_POST['width'];
-      $breadth = $_POST['breadth'];
-      $area = $width * $breadth;
+      <form action="./exchange-process.php" method="post">
+        <div class="flex gap-3 items-center mb-4">
+          <label for="amount" class="text-sm font-medium mb-2 dark:text-white">Amount:</label>
+          <input type="number" name="amount" id="amount" class="flex-grow py-2.5 sm:py-3 px-4 border-gray-200 rounded-lg sm:text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
+        </div>
 
-      $fileName = "areaRecord.txt";
-      if (!file_exists($fileName)) {
-        touch($fileName);
-      }
-
-      $fileStream = fopen($fileName, "a");
-      fwrite($fileStream, "\n$width * $breadth = $area");
-      fclose($fileStream);
-      ?>
-
-      <p class="text-5xl text-center my-10">
-        <?= $area ?> Sqft
-      </p>
-
-      <div class="flex gap-3">
-        <a href="/area.php" class="flex-grow py-3 px-4 inline-flex items-center justify-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">
-          Calculate Again
-        </a>
-        <a href="area-record.php" class="flex-grow py-3 px-4 inline-flex items-center justify-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 text-gray-500 hover:border-blue-600 hover:text-blue-600 focus:outline-hidden focus:border-blue-600 focus:text-blue-600 disabled:opacity-50 disabled:pointer-events-none dark:border-neutral-700 dark:text-neutral-400 dark:hover:text-blue-500 dark:hover:border-blue-600 dark:focus:text-blue-500 dark:focus:border-blue-600">
-          All Record
-        </a>
-      </div>
+        <div class="flex items-center gap-3 mb-5">
+          <?php
+          $content = file_get_contents("http://forex.cbm.gov.mm/api/latest");
+          $obj = json_decode($content, true);
+          // $exchangeRate = $obj->rates;
+          $exchangeRate = $obj["rates"];
+          $exchangeRate["MMK"] = 1;
+          ?>
+          <select name="fromCurrency" id="fromCurrency" class="py-3 px-4 pe-9 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
+            <?php foreach ($exchangeRate as $key => $value): ?>
+              <option value='<?= "$key $value" ?>'><?= $key ?></option>
+            <?php endforeach; ?>
+          </select>
+          <p>to</p>
+          <select name="toCurrency" id="toCurrency" class="py-3 px-4 pe-9 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600">
+            <?php foreach ($exchangeRate as $key => $value): ?>
+              <option value='<?= "$key $value" ?>'><?= $key ?></option>
+            <?php endforeach; ?>
+          </select>
+        </div>
+        <button type="submit" name="calc_btn" class="w-full py-3 px-4 inline-flex items-center justify-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">
+          Exchange
+        </button>
+      </form>
 
     </section>
   </main>
