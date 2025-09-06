@@ -28,14 +28,17 @@ require_once('./src/template/sidebar.php');
 
   <hr class="border-gray-300 my-4">
 
-  <?php
-  $photos = array_filter(scandir('public/gallery'), fn($el) => $el != "." && $el != "..");
-  ?>
   <div class="columns-3">
     <?php
+    $photos = array_filter(scandir('public/gallery'), fn($el) => $el != "." && $el != "..");
     foreach ($photos as $photo):
     ?>
-      <img src="public/gallery/<?= $photo ?>" alt="<?= $photo ?>" class="mt-3 first:mt-0">
+      <div class="inline-block relative group">
+        <img src="public/gallery/<?= $photo ?>" alt="<?= $photo ?>" class="rounded-lg">
+        <a href="gallery-delete.php?file_name=<?= $photo ?>" class="hidden group-hover:inline-flex pointer-events-none group-hover:pointer-events-auto absolute bottom-1 right-1 py-1.5 px-3 items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-red-500 text-white hover:bg-red-600 focus:outline-hidden focus:bg-red-600 disabled:opacity-50 disabled:pointer-events-none">
+          Button
+        </a>
+      </div>
     <?php
     endforeach;
     ?>

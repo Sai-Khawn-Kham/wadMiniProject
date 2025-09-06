@@ -76,7 +76,7 @@ require_once('./src/template/sidebar.php');
         <?php
         foreach ($currUpload as $photo):
         ?>
-          <img src="<?= $photo ?>">
+          <img class="rounded-lg mt-3 first:mt-0" src="<?= $photo ?>">
         <?php
         endforeach;
         ?>
