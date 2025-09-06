@@ -18,6 +18,8 @@ cd your-repo
 2. Run the server
 
 ```bash
+npm i
+sh tw.sh
 php -S localhost:9000
 ```
 
