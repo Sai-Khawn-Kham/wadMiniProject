@@ -1,18 +1,23 @@
 <?php
 
-// echo "<pre>";
-// print_r($_FILES);
+if(empty($_FILES)) {
+  header("Location: /gallery.php");
+  die("-- No file was uploaded --");
+}
 
 $saveDir = "public/gallery";
 if (!is_dir($saveDir)) {
   mkdir($saveDir, 0777, true);
 }
 
+$currUpload = [];
+
 //  ------------------------------------------------------------- multiple upload files
 $error = false;
 foreach ($_FILES['upload']['name'] as $key => $name) {
   $ext = pathinfo($name)['extension'];
   $saveFile = $saveDir . "/" . uniqid() . "." . $ext;
+  array_push($currUpload, $saveFile);
   if (!move_uploaded_file($_FILES['upload']['tmp_name'][$key], $saveFile)) {
     $error = true;
   } else {
@@ -63,18 +68,34 @@ require_once('./src/template/sidebar.php');
   <hr class="border-gray-300 my-4">
 
   <?php
-    if ($error === false) : 
+  if ($error === false) :
   ?>
-    <div>Uploaded Image <a class="bg-gray-400 px-2 py-1 rounded-lg" href="./gallery-slideshow.php">Go to Gallery Collection</a></div>
+    <div>
+      <h3 class="text-2xl font-semibold">Uploaded Image</h3>
+      <div class="columns-3 mt-4">
+        <?php
+        foreach ($currUpload as $photo):
+        ?>
+          <img src="<?= $photo ?>">
+        <?php
+        endforeach;
+        ?>
+      </div>
+      <div class="flex justify-center">
+        <a href="./gallery-slideshow.php" class="mt-4 py-1.5 px-3 inline-flex items-center justify-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">
+          Go to Gallery Collection
+        </a>
+      </div>
+    </div>
   <?php
-    else :
+  else :
   ?>
     <div>ERROR: Can't upload the image. <a class="hover:underline" href="./gallery.php">Go to Gallery</a></div>
   <?php
-    endif;
+  endif;
   ?>
 </section>
 
 <?php
-  require_once('./src/template/footer.php');
+require_once('./src/template/footer.php');
 ?>
