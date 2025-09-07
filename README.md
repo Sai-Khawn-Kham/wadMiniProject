@@ -19,7 +19,7 @@ cd your-repo
 
 ```bash
 npm i
-sh tw.sh
+npx @tailwindcss/cli -i ./input.css -o ./src/styles/app.css --watch
 php -S localhost:9000
 ```
 
