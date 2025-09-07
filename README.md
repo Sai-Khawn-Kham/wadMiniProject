@@ -11,8 +11,8 @@ A lightweight PHP project built without frameworks — just pure PHP.
 1. Clone this repository:
 
 ```bash
-git clone https://github.com/Sai-Khawn-Kham/shop-next.git
-cd your-repo
+git clone https://github.com/Sai-Khawn-Kham/wadMiniProject.git
+cd project
 ```
 
 2. Run the server
